@@ -1,0 +1,27 @@
+{
+  "name": "developer-profile-generator",
+  "version": "1.0.0",
+  "description": "generate one's github profile in a pdf form",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShawnWhy/Developer-Profile-Generator.git"
+  },
+  "author": "Shawn Yu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShawnWhy/Developer-Profile-Generator/issues"
+  },
+  "homepage": "https://github.com/ShawnWhy/Developer-Profile-Generator#readme",
+  "dependencies": {
+    "axios": "^0.19.1",
+    "electron": "^7.1.9",
+    "electron-html-to": "^2.6.0",
+    "inquirer": "^7.0.3",
+    "until": "^0.1.1",
+    "util": "^0.12.1"
+  }
+}
