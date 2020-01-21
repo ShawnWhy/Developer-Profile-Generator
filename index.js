@@ -153,7 +153,7 @@ for(var i=0;i<ColorNames.length;i++){
     colorunder[i]=ColorNames[i].toLowerCase();
 }
 
-const googleMapAPIKey="AIzaSyCi9MNw3zwpsLsh2bXJkQyOZK0vGN8khPg";
+
 var color;
 var imageLocation;    
 var name;
