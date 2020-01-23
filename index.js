@@ -1,3 +1,121 @@
+const axios = require("axios");
+const inquirer = require("inquirer");
+var fs = require("fs");
+// convertFactory = require('electron-html-to');
+
+const electron = require("electron");
+const util = require("util");
+
+function writePdf(){
+        var fs = require('fs'),
+        convertFactory = require('electron-html-to');
+
+    fs.readFile('profile.html', 'utf8', (err, htmlString) => {
+    // add local path in case your HTML has relative paths
+    // htmlString = htmlString.replace(/href="|src="/g, match => {
+    //   return match + 'file://path/to/you/base/public/directory';
+    // });
+    const conversion = convertFactory({
+      converterPath: convertFactory.converters.PDF,
+      allowLocalFilesAccess: true
+    });
+    conversion({ html: htmlString }, (err, result) => {
+      if (err) return console.error(err);
+      result.stream.pipe(fs.createWriteStream('profile.pdf'));
+      conversion.kill(); // necessary if you use the electron-server strategy, see bellow for details
+    });
+  });
+      
+
+
+}
+
+
+// function writepdf(){
+
+//     var fs = require('fs'),
+//         convertFactory = require('electron-html-to');
+         
+     
+//     var conversion = convertFactory({
+//       converterPath: convertFactory.converters.PDF
+//     });
+     
+//     conversion({ html: `
+//     <html>
+//         <head>
+//             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+//             <style>
+//             img{
+//                 display:block;
+//              max-width: 150%;
+//              max-height:150%;
+//              height:auto;
+//             width:auto;
+//             margin:auto;
+//             position:relative;
+//             right:14% }
+//             .image-container{
+//                 border-radius: 50%;
+//                 height:200px;
+//                 margin:5% auto;
+//                  border:2px double white;
+//                 overflow:hidden;
+//                 position:relative;
+//                 top:10%;
+//             }
+//             .sectionsContainer{
+//                 position:relative;
+//                 right:10%;
+//             }
+//             body{
+//                 border:2px solid black
+//             }</style>
+//     </head>
+//         <body>
+//              <div class="row">
+//                 <div class= "col-md-4 offset-md-1">
+//                 <div class= "col-md-8 offset-md-2" style="background-color:${color}; border-radius:40px; margin:2% auto; height:500px">
+//                     <div class="row" style="margin-top:20px"></div>
+//                     <div class="row">
+//                         <div class="col-md-6 offset-md-3 image-container"><img src=${imageLocation}></div>
+//                     </div>
+//                 <div style="width:100%"></div>
+//                     <div class="row">
+//                         <div class = "col-md-8 offset-md-2">
+//                         <p style="text-align:center; margin:5px auto">${name}</p>
+//                         <div style="width:100%; height:1px; background-color:white;"></div>
+//                         <p style="text-align:center; margin:5px auto">${bio}</p>
+//                             <div class="col-md-12">
+//                          <a class = "col-md-3 offset-md-1" style="background-color:white; height:auto; border-radius:3px;" href="https://www.google.com/maps/place/${location}">${location}</a>
+//                         <a class = "col-md-3 offset-md-1" style="background-color:white; height:auto; border-radius:3px;"href =${website}>website</a>
+//                         <a class = "col-md-3 offset-md-1" style="background-color:white; height:auto; border-radius:3px;"href=${githubPage}>GitHub</a>
+//                         </div></div> </div>
+//                         </div>
+//                     </div>
+//                     <div class="col-md-5 sectionsContainer" style="border:2px solid ${color};background-color:white; border-radius:40px; margin:2% auto; height:500px">
+//                         <div class="row" style="height:20%"></div>
+//                         <div class="row" style="height:20%">
+//                     <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px; text-align:center; font-weight:bold">Public Repositories:<br>${repos}</div>
+//                     <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px; text-align:center; font-weight:bold">GitHub Stars:<br>${stars}</div></div>
+//                     <div class="row" style="height:20%"></div>
+//                     <div class="row" style="height:20%">
+//                         <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px; text-align:center; font-weight:bold">followers:<br>${followers}</div>
+//                         <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px; text-align:center; font-weight:bold">following:<br>${following}</div></div>
+//                     </div>
+//         </div>
+//         </body>
+//     </html>` }, function(err, result) {
+//       if (err) {
+//         return console.error(err);
+//       }
+     
+    //   console.log(result.numberOfPages);
+    //   console.log(result.logs);
+    //   result.stream.pipe(fs.createWriteStream('portfolio.pdf'));
+    //   conversion.kill(); // necessary if you use the electron-server strategy, see bellow for details
+    // });}
+
 const ColorNames = [
     "AliceBlue",
     "AntiqueWhite",
@@ -153,7 +271,7 @@ for(var i=0;i<ColorNames.length;i++){
     colorunder[i]=ColorNames[i].toLowerCase();
 }
 
-
+var gitHubInformation={};
 var color;
 var imageLocation;    
 var name;
@@ -167,15 +285,10 @@ var repos;
 var bio ;
 var stars;
 var githubPage;
+var htmlInfo;
 
 
-const axios = require("axios");
-const inquirer = require("inquirer");
-const fs = require("fs"),
-convertFactory = require('electron-html-to');
 
-const electron = require("electron");
-const util = require("util");
 
 
 const readFileAsync = util.promisify(fs.readFile);
@@ -224,9 +337,9 @@ await inquirer.prompt({
       
       .then(function(data){
           //turn res information into variables;
-          var gitHubInformation= JSON.parse(data);
-          console.log(gitHubInformation);
-            var imageLocation = gitHubInformation.avatar_url;      
+           gitHubInformation= JSON.parse(data);
+        //   console.log( gitHubInformation);
+             imageLocation = gitHubInformation.avatar_url;      
              name = gitHubInformation.name;
              followers=gitHubInformation.followers;
             following=gitHubInformation.following;
@@ -239,6 +352,7 @@ await inquirer.prompt({
               githubPage=gitHubInformation.html_url;
             //   stars = gitHubInformation.
             
+           
              writefileAsync("profile.html", 
 `
 <html>
@@ -286,7 +400,7 @@ await inquirer.prompt({
                     <div style="width:100%; height:1px; background-color:white;"></div>
                     <p style="text-align:center; margin:5px auto">${bio}</p>
                         <div class="col-md-12">
-                     <a class = "col-md-3 offset-md-1" style="background-color:white; height:auto; border-radius:3px;" href="">${location}</a>
+                     <a class = "col-md-3 offset-md-1" style="background-color:white; height:auto; border-radius:3px;" href="https://www.google.com/maps/place/${location}">${location}</a>
                     <a class = "col-md-3 offset-md-1" style="background-color:white; height:auto; border-radius:3px;"href =${website}>website</a>
                     <a class = "col-md-3 offset-md-1" style="background-color:white; height:auto; border-radius:3px;"href=${githubPage}>GitHub</a>
                     </div></div> </div>
@@ -295,58 +409,67 @@ await inquirer.prompt({
                 <div class="col-md-5 sectionsContainer" style="border:2px solid ${color};background-color:white; border-radius:40px; margin:2% auto; height:500px">
                     <div class="row" style="height:20%"></div>
                     <div class="row" style="height:20%">
-                <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px;">Public Repositories:${repos}</div>
-                <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px;">GitHub Stars:${stars}</div></div>
+                <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px; text-align:center; font-weight:bold">Public Repositories:<br>${repos}</div>
+                <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px; text-align:center; font-weight:bold">GitHub Stars:<br>${stars}</div></div>
                 <div class="row" style="height:20%"></div>
                 <div class="row" style="height:20%">
-                    <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px;">followers:${followers}</div>
-                    <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px;">following:${following}</div></div>
+                    <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px; text-align:center; font-weight:bold">followers:<br>${followers}</div>
+                    <div class="col-md-3 offset-md-2" style="background-color:${color};border:2px solid white; border-radius:20px; text-align:center; font-weight:bold">following:<br>${following}</div></div>
                 </div>
     </div>
     </body>
-</html>`,"utf8")}))
+</html>`,"utf8")
+}))
+// .then(function(){console.log("wroteHTML")})
 // .then(function(){
+//  var fs = require("fs"),
+// convertFactory = require('electron-html-to');
   
-// fs.readFile('profile.html', 'utf8', (err, htmlString) => {
+// readFileAsync('profile.html', 'utf8') 
+// .then(function(htmlString){
+//     // console.log(htmlString);
+
 //     // add local path in case your HTML has relative paths
 //     // htmlString = htmlString.replace(/href="|src="/g, match => {
 //     //   return match + 'file://path/to/you/base/public/directory';
 //     // });
+    
 //     const conversion = convertFactory({
 //       converterPath: convertFactory.converters.PDF,
 //       allowLocalFilesAccess: true
 //     });
-//     conversion({ html: htmlString }, (err, result) => {
+//     conversion({ html: htmlString }, 
+//         (err, result) => {
 //       if (err) return console.error(err);
-//       result.stream.pipe(fs.createWriteStream('c:/profile.pdf'));
+//       result.stream.pipe
+//       (fs.createWriteStream('profile.pdf'))})})
 //       conversion.kill(); // necessary if you use the electron-server strategy, see bellow for details
-//     });
-//   });
-//       }
+//     })
+  
+
+  
+ 
+readFileAsync("profile.html","utf8")    
 
 
-
-
-
+.then(writePdf())
 
 
 
 
 
 // )
-        
-            
-            
-             
-
- 
-  
-
+.then(function(){console.log("done")});
 })})}
 catch(err){
     console.log("error"+err);
+
+
 }}
+
 createProfile(); 
+
+
 
 
 // fs.readFile('index.html', 'utf8', (err, htmlString) => {
@@ -465,3 +588,5 @@ createProfile();
 //          "more work",
 //      ]
 //     },
+
+
