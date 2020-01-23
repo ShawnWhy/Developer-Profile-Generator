@@ -418,7 +418,8 @@ await inquirer.prompt({
                 </div>
     </div>
     </body>
-</html>`,"utf8")
+</html>`,"utf8").then(writePdf())
+
 }))
 // .then(function(){console.log("wroteHTML")})
 // .then(function(){
@@ -449,10 +450,8 @@ await inquirer.prompt({
 
   
  
-readFileAsync("profile.html","utf8")    
 
 
-.then(writePdf())
 
 
 
