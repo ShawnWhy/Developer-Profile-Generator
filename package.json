@@ -18,7 +18,7 @@
   "homepage": "https://github.com/ShawnWhy/Developer-Profile-Generator#readme",
   "dependencies": {
     "axios": "^0.19.1",
-    "electron": "^5.0.12",
+    "electron": "^13.6.6",
     "electron-html-to": "^2.6.0",
     "inquirer": "^7.0.3",
     "until": "^0.1.1",
